@@ -1,0 +1,8 @@
+{
+  "name": "hihi-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/simochee/hihi-backend.git",
+  "author": "Ryoya Tamura <simochee@gmail.com>",
+  "license": "MIT"
+}
