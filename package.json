@@ -4,5 +4,23 @@
   "main": "index.js",
   "repository": "https://github.com/simochee/hihi-backend.git",
   "author": "Ryoya Tamura <simochee@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "dev": "PORT=43000 NODE_ENV=development nodemon -r babel-register app.js",
+    "start": "PORT=43000 NODE_ENV=production node -r babel-register app.js"
+  },
+  "dependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "ip": "^1.1.5"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.3",
+    "eslint": "^4.13.0",
+    "eslint-plugin-node": "^5.2.1",
+    "nodemon": "^1.12.5"
+  }
 }

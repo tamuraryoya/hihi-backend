@@ -1,0 +1,13 @@
+---
+  parser: babel-eslint
+  env:
+    es6: true
+    node: true
+  plugins:
+    - node
+  extends:
+    - eslint:recommended
+    - plugin:node/recommended
+  rules:
+    no-console: 1 # consoleを使用すると警告
+    node/no-unsupported-features: 0 # 新しい技術を使えるようにする
