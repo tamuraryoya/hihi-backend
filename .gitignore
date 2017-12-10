@@ -1,5 +1,11 @@
 ### https://raw.github.com/github/gitignore/35c010258fc790ad769033e9ccfb1021178f2925/Node.gitignore
 
+# secret keys
+secret/
+
+# database
+*.sqlite3
+
 # Logs
 logs
 *.log
@@ -58,6 +64,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
-
-

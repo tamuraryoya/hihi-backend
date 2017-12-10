@@ -10,12 +10,15 @@
     "start": "PORT=43000 NODE_ENV=production node -r babel-register app.js"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "ip": "^1.1.5"
+    "ip": "^1.1.5",
+    "node-line-bot-api": "^0.1.4",
+    "sqlite3": "^3.1.13"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",
