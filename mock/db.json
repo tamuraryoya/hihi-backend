@@ -1,0 +1,14 @@
+{
+  "items": {
+    "0": "カレンダー"
+  },
+  "separations": {
+    "0": "燃えるゴミ"
+  },
+  "relations": [
+    {
+      "itemId": "0",
+      "separationId": "0"
+    }
+  ]
+}

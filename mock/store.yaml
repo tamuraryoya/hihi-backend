@@ -1,0 +1,300 @@
+swagger: "2.0"
+
+info:
+  version: "1.0.0"
+  title: "ゴミ分別ボット API"
+  description: |
+    ゴミ分別ボットのAPIです
+  termsOfService: "https://google.co.jp"
+
+host: "api.ube-gomi.net"
+basePath: "/v2"
+schemes:
+  - "https"
+
+tags:
+  - name: "client"
+    description: "LINE Bot（ユーザー側）から呼び出されるAPI"
+  - name: "admin"
+    description: "管理画面から呼び出されるAPI"
+
+paths:
+  #
+  # ゴミと回収方法の関係についてのAPI
+  #
+  /trush/separation:
+    get:
+      tags:
+        - "client"
+      summary: "アイテムの分別方法を取得"
+      description: |
+        送信されたアイテムの分別方法を取得します。
+        アイテムの分別方法が登録されている場合は分別方法の文言を、登録されていない場合は404エラーを返します。
+      parameters:
+        - in: "query"
+          name: "itemName"
+          type: "string"
+          description: "分別方法を検索するアイテム名"
+          required: true
+      responses:
+        # 分別方法が登録されている場合
+        200:
+          description: "アイテム名と分別方法を文字列で返します"
+          schema:
+            $ref: "#/definitions/Separation"
+        # 分別方法が登録されていない場合
+        404:
+          description: "分別方法が登録されていない場合は404を返します"
+
+  #
+  # ゴミ・分別方法自体を操作するAPI
+  #
+  /trush:
+    put:
+      tags:
+        - "client"
+        - "admin"
+      summary: "アイテムを追加"
+      description: |
+        アイテムを新規に追加します
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              itemName:
+                type: "string"
+                description: "追加するアイテムの名称"
+                example: "ティッシュペーパー"
+              separationId:
+                type: "number"
+                description: "分別方法の識別ID"
+                example: 172
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+    post:
+      tags:
+        - "admin"
+      summary: "アイテムを更新"
+      description: |
+        既存のアイテムを更新します
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              itemId:
+                type: "number"
+                description: "対象のアイテムの識別ID"
+                example: 82
+              itemName:
+                type: "string"
+                description: "アイテム名"
+                example: "マウス"
+              separationId:
+                type: "number"
+                description: "分別方法の識別ID"
+                example: 101
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+  /trush/tying:
+    post:
+      tags:
+        - "admin"
+      summary: "別のアイテムと紐付け"
+      description: |
+        アイテムと別のアイテムを紐付け、全く同じ分別方法を返すようにします
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              itemId:
+                type: "number"
+                description: "紐付けられるアイテムの識別ID"
+                example: 21
+              targetItemIds:
+                type: "array"
+                description: "紐付けるアイテムの配列"
+                items:
+                  - type: "number"
+                example:
+                  - 107
+                  - 194
+                  - 302
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+  /trush/invalidation:
+    post:
+      tags:
+        - "admin"
+      summary: "アイテムを無効化"
+      description: |
+        アイテムを無効な入力として登録する
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              targetItemIds:
+                type: "array"
+                description: "無効化するアイテムの配列"
+                items:
+                  - type: "number"
+                example:
+                  - 308
+                  - 381
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+  /separation:
+    put:
+      tags:
+        - "admin"
+      summary: "分別方法を追加"
+      description: |
+        分別方法を新規に追加します
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              separationContent:
+                type: "string"
+                description: "分別方法の内容文"
+                example: "汚れている場合：燃えるゴミ\nきれいな場合：プラスチック"
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+    post:
+      tags:
+        - "admin"
+      summary: "分別方法を更新"
+      description: |
+        既存の分別方法を更新します
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              separationId:
+                type: "number"
+                description: "分別方法の識別ID"
+                example: 17
+              separationContent:
+                type: "string"
+                description: "分別方法の内容文"
+                example: "燃やせないゴミ"
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+  /separation/merge:
+    post:
+      tags:
+        - "admin"
+      summary: "分別方法を統合する"
+      description: |
+        既存の分別方法を別の方法と統合させます
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "送られてくるデータ"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              separationId:
+                type: "number"
+                description: "統合される分別方法の識別ID"
+                example: 97
+              targetSeparationIds:
+                type: "array"
+                description: "統合する対象の分別方法の配列"
+                items:
+                  - type: "number"
+                example:
+                  - 19
+                  - 40
+                  - 44
+      responses:
+        200:
+          description: "結果のステータスを返します"
+          schema:
+            type: "object"
+            properties:
+              state:
+                $ref: "#/definitions/state"
+
+
+definitions:
+  Separation:
+    type: "object"
+    properties:
+      state:
+        $ref: "#/definitions/state"
+      data:
+        type: "object"
+        properties:
+          itemName:
+            type: "string"
+            example: "カップ麺の容器"
+          separation:
+            type: "string"
+            example: "燃えるゴミ"
+  state:
+    type: "string"
+    enum:
+      - "success"
+      - "failure"
+    default: "success"

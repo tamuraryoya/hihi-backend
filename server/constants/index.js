@@ -13,8 +13,12 @@ export default {
 
   // 動的な返信メッセージ
   REPLY_SEARCH_SEPARATION_RESULT: (itemName, separation) => `${itemName}は${separation}です`,
-  REPLY_SEPARATION_NOT_FOUND: (itemName) => `${itemName}は分別方法が登録されていません`,
+  REPLY_SEPARATION_NOT_FOUND: (itemName) => `${itemName}は分別方法が登録されていません\n似た単語でお試しください`,
 
   // ステータス
-  USER_NOT_FOUND: 'USER_NOT_FOUND'
+  STATUS_NONE: 0,   // 会話をしていない
+  STATUS_INIT_SEARCH_SEPARATION: 1,   // 分別方法検索が初期化された
+
+  // エラーステータス
+  USER_NOT_FOUND: -1,   // ユーザーが見つからなかった
 };

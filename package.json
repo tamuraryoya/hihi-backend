@@ -6,6 +6,7 @@
   "author": "Ryoya Tamura <simochee@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "mock": "PORT=8081 nodemon --watch mock mock/server.js",
     "dev": "PORT=43000 NODE_ENV=development nodemon -r babel-register app.js",
     "start": "PORT=43000 NODE_ENV=production node -r babel-register app.js"
   },
@@ -17,6 +18,8 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "ip": "^1.1.5",
+    "json-server": "^0.12.1",
+    "lodash": "^4.17.4",
     "node-line-bot-api": "^0.1.4",
     "sqlite3": "^3.1.13"
   },

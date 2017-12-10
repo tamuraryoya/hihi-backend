@@ -58,7 +58,7 @@ class Database {
           if (err) {
             reject(err);
           } else {
-            resolve(err);
+            resolve();
           }
         });
       });
@@ -92,6 +92,14 @@ class Database {
   }
 
   /**
+   * ユーザーのステータスをリセットする
+   * @param {string} userId ユーザーのID
+   */
+  resetUserStatus(userId) {
+    return this.setUserStatus(userId, C.STATUS_NONE);
+  }
+
+  /**
    * ユーザーが存在しなければデータベースに登録する
    * @param {string} userId ユーザーID
    * @param {function} [callback=() => {}] コールバック
@@ -110,4 +118,4 @@ class Database {
   }
 }
 
-export default Database;
+export default new Database();
