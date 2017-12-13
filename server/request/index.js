@@ -7,7 +7,8 @@ class Request {
    */
   static url(path) {
     const baseUrl = process.env.NODE_ENV === 'production' ?
-      '//api.ube-gomi.net' :
+      // '//api.hihi.work' :
+      'http://localhost:8081' :
       'http://localhost:8081';
     return `${baseUrl}${path}`;
   }
@@ -30,7 +31,7 @@ class Request {
             }
 
             // 結果を返却
-            resolve(res.body.data);
+            resolve(res.body);
         });
     });
   }

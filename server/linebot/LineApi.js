@@ -23,7 +23,7 @@ class BotUtil {
    * line.validator.validateSignature()のラッパ
    */
   static validateSignature() {
-    return line.validator.validateSignature();
+    return line.validator.validateSignature;
   }
 
   /**

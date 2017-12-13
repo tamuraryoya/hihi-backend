@@ -12,7 +12,7 @@ app.use(bodyParser.json({
 
 import LineBot from './server/linebot';
 const linebot = new LineBot();
-app.use('/', linebot.webhook());
+app.use('/webhook', linebot.webhook());
 
 const port = `${process.env.PORT || 8000}`;
 app.listen(port, () => {

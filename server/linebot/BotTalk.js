@@ -40,19 +40,27 @@ class BotTalk {
             case C.STATUS_INIT_SEARCH_SEPARATION:
               Request.searchSeparation(text)
                 .then((response) => {
-                  if (!response.isFound) {
+                  switch (response.state) {
                     // 分別方法が見つからなかった
-                    result.messages = [C.REPLY_SEPARATION_NOT_FOUND(response.itemName)];
-                    resolve(result);
-                  } else {
-                    // 分別方法が見つかった
-                    // ユーザーのステータスを更新する
-                    Database.resetUserStatus(userId)
-                      .then(() => {
-                        result.messages = [C.REPLY_SEARCH_SEPARATION_RESULT(response.itemName, response.separation)];
-                        resolve(result);
-                      })
-                      .catch(callback);
+                    case C.STATUS_RESULT_NOT_FOUND:
+                      result.messages = [C.REPLY_SEPARATION_NOT_FOUND(text)];
+                      resolve(result);
+                      break;
+                    // 検索結果が多すぎる
+                    case C.STATUS_TOO_MUCH_RESULTS:
+                      result.messages = [C.REPLY_TOO_MUCH_RESULTS];
+                      resolve(result);
+                      break;
+                    // 検索成功
+                    default:
+                      // ユーザーのステータスを更新する
+                      Database.resetUserStatus(userId)
+                        .then(() => {
+                          result.messages = C.REPLY_SEARCH_SEPARATION_RESULTS(response.data);
+                          resolve(result);
+                        })
+                        .catch(callback);
+                      break;
                   }
                 })
                 .catch(callback);

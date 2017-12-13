@@ -20,6 +20,10 @@ app.post('*', (req, res, next) => {
 // 分別方法を取得
 app.get('/trush/separation', (req, res) => {
   const itemName = req.query.itemName;
+
+  res.send(util.getSeparation(itemName));
+
+  /* ここから下は実行されない
   const itemId = util.getItemId(itemName);
   const body = util.getSeparationFromItemId(itemId);
   if (body) {
@@ -35,6 +39,7 @@ app.get('/trush/separation', (req, res) => {
       itemName
     }));
   }
+  */
 });
 
 app.listen(port, () => {
