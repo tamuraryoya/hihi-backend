@@ -36,12 +36,22 @@ class BotUtil {
     // リプライする
     line.client.replyMessage({
       replyToken,
-      messages: messages.map((message) => {
-        return {
-          type: 'text',
-          text: message
-        }
-      })
+      messages: messages
+        .filter((message) => {
+          // 文字列かmessage.typeが指定されているもののみ
+          return typeof message === 'string' || message.type
+        })
+        .map((message) => {
+          // 文字のみの場合はテキストメッセージとして登録
+          if (typeof message === 'string') {
+            return {
+              type: 'text',
+              text: message
+            }
+          }
+          // オブジェクトの場合はそのまま登録
+          return message;
+        })
     });
     callback();
   }

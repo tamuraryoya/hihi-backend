@@ -746,7 +746,6 @@
 { "label": "燃やせないごみ",  "name": "ワイヤーロープ",  "notice": "【燃やせないごみ】",  "furigana": "わいやーろーぷ"},
 { "label": "燃やせるごみ",  "name": "輪ゴム",  "notice": "",  "furigana": "わごむ"},
 { "label": "燃やせないごみ",  "name": "ワックスの缶",  "notice": "【燃やせないごみ】中身は使い切る又は取り除く",  "furigana": "わっくすのかん"},
-{ "label": "燃やせるごみ",  "name": "わりばし",  "notice": "",  "furigana": "わりばし"},
-{ "label": ""}
+{ "label": "燃やせるごみ",  "name": "わりばし",  "notice": "",  "furigana": "わりばし"}
 ]
 }

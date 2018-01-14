@@ -4,5 +4,6 @@
   ],
   "plugins": [
     "transform-class-properties"
-  ]
+  ],
+  "compact": false
 }

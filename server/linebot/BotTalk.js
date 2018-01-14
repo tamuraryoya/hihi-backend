@@ -1,6 +1,7 @@
 import async from 'async';
 import Database from '../database';
 import Request from '../request';
+import Util from '../utilities';
 import C from '../constants';
 
 class BotTalk {
@@ -37,26 +38,38 @@ class BotTalk {
           // 処理を振り分け
           switch (status) {
             // 分別検索が初期化されていれば入力内容で分別方法を検索
-            case C.STATUS_INIT_SEARCH_SEPARATION:
-              Request.searchSeparation(text)
+            case C.STATUS_INIT_SEARCH_SEPARATION: {
+              Database.separation.search.all(text)
                 .then((response) => {
                   switch (response.state) {
                     // 分別方法が見つからなかった
                     case C.STATUS_RESULT_NOT_FOUND:
-                      result.messages = [C.REPLY_SEPARATION_NOT_FOUND(text)];
-                      resolve(result);
+                      // データベースへログを反映
+                      Database.log.insert(text, 0)
+                        .then(() => {
+                          // リプライを送る
+                          result.messages = [C.REPLY_SEPARATION_NOT_FOUND(text)];
+                          resolve(result);
+                        })
+                        .catch(callback);
                       break;
                     // 検索結果が多すぎる
                     case C.STATUS_TOO_MUCH_RESULTS:
-                      result.messages = [C.REPLY_TOO_MUCH_RESULTS];
-                      resolve(result);
+                      // データベースへログを反映
+                      Database.log.insert(text, 2)
+                        .then(() => {
+                          result.messages = [C.REPLY_TOO_MUCH_RESULTS(text, response.count)];
+                          resolve(result);
+                        })
+                        .catch(callback);
                       break;
                     // 検索成功
                     default:
-                      // ユーザーのステータスを更新する
-                      Database.resetUserStatus(userId)
+                      // データベースへログを反映
+                      Database.log.insert(text, 1)
                         .then(() => {
-                          result.messages = C.REPLY_SEARCH_SEPARATION_RESULTS(response.data);
+                          // ユーザーのステータスを更新する
+                          result.messages = C.REPLY_SEARCH_SEPARATION_RESULTS(text, response.data);
                           resolve(result);
                         })
                         .catch(callback);
@@ -65,9 +78,45 @@ class BotTalk {
                 })
                 .catch(callback);
               return;
+            }
+            // 地区登録が初期化されて入れば入力内容で地区を登録する
+            case C.STATUS_INIT_SETTING_DISTRICT: {
+              Util.findDistrict(text)
+                .then((response) => {
+                  if (response.success) {
+                    async.waterfall([
+                      // 地区をユーザーに登録する
+                      (step) => {
+                        Database.updateUserDistrict(userId, response.district)
+                          .then(step)
+                          .catch(step);
+                      },
+                      // ユーザーのステータスをリセットさせる
+                      (step) => {
+                        Database.resetUserStatus(userId)
+                          .then(step)
+                          .catch(step);
+                      }
+                    ], (err) => {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        result.messages = [C.REPLY_SETTING_DISTRICT_RESULT(response.district)];
+                        resolve(result);
+                      }
+                    });
+                  } else {
+                    result.messages = [C.REPLY_SETTING_DISTRICT_ERROR];
+                    resolve(result);
+                  }
+                })
+                .catch(callback);
+              return;
+            }
             // 不正な入力
-            default:
+            default: {
               callback();
+            }
           }
         }
       ], (err) => {
